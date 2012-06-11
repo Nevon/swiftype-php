@@ -14,6 +14,14 @@ class SwiftypeClient {
 		$this->api_key = $api_key;
 		$this->host = $host;
 		$this->api_base_path = $api_base_path;
+
+		if(!function_exists('curl_init')){
+			throw new \Exception('Swiftype requires the CURL PHP extension.');
+		}
+
+		if(!function_exists('json_decode')){
+  			throw new \Exception('Swiftype requires the JSON PHP extension.');
+		}
 	}
 
 	public function engines() {
