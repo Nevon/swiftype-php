@@ -91,10 +91,10 @@ class SwiftypeClient {
 		return $this->post($this->documents_path($engine_id, $document_type_id).'/bulk_destroy', array(), array('documents' => $document_ids));
 	}
 
-	public function search($engine_id, $query, $options = array()) {
+	public function search($engine_id, $document_type_id=null, $query, $options = array()) {
 		$query_string = array('q' => $query);
 		$full_query = array_merge($query_string, $options);
-		return $this->get($this->search_path($engine_id), array(), $full_query);
+		return $this->get($this->search_path($engine_id, $document_type_id), array(), $full_query);
 	}
 
 	public function suggest($engine_id, $query, $options = array()) {
@@ -103,8 +103,12 @@ class SwiftypeClient {
 		return $this->get($this->suggest_path($engine_id), array(), $full_query);
 	}
 
-	private function search_path($engine_id) {
-		return 'engines/'.$engine_id.'/search';
+	private function search_path($engine_id, $document_type_id = null) {
+		if ($document_type_id === null) {
+			return 'engines/'.$engine_id.'/search';
+		} else {
+			return 'engines/'.$engine_id.'/document_types/'.$document_type_id.'/documents';
+		}
 	}
 
 	private function suggest_path($engine_id) {
