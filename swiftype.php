@@ -55,22 +55,18 @@ class SwiftypeClient {
 		return $this->get($this->documents_path($engine_id, $document_type_id));
 	}
 
-	//Broken
 	public function create_document($engine_id, $document_type_id, $document = array()) {
 		return $this->post($this->documents_path($engine_id, $document_type_id), array(), array('document' => $document));
 	}
 
-	//Broken
 	public function create_or_update_document($engine_id, $document_type_id, $document = array()) {
 		return $this->post($this->documents_path($engine_id, $document_type_id).'/create_or_update', array(), array('document' => $document));
 	}
 
-	//Not tested yet
 	public function update_document($engine_id, $document_type_id, $document_id, $fields = array()) {
 		return $this->put($this->document_path($engine_id, $document_type_id, $document_id).'/update_fields', array(), array('fields' => $fields));
 	}
 
-	//Not tested yet
 	public function update_documents($engine_id, $document_type_id, $documents = array()) {
 		return $this->put($this->documents_path($engine_id, $document_type_id).'/bulk_update', array(), array('documents' => $documents));
 	}
@@ -79,7 +75,6 @@ class SwiftypeClient {
 		return $this->delete($this->document_path($engine_id, $document_type_id, $document_id));
 	}
 
-	//Not tested yet
 	public function destroy_documents($engine_id, $document_type_id, $document_ids = array()) {
 		return $this->post($this->documents_path($engine_id, $document_type_id).'/bulk_destroy', array(), array('documents' => $document_ids));
 	}
@@ -199,7 +194,7 @@ class SwiftypeClient {
     	curl_close($request);
     
     	//Any 2XX HTTP codes mean that the request worked
-    	if (floor($http_status / 100) == 2) {
+    	if (intval(floor($http_status / 100)) === 2) {
     		$final = json_decode($response);
     		switch (json_last_error()) {
     			case JSON_ERROR_DEPTH:
@@ -236,7 +231,7 @@ class SwiftypeClient {
     		} else {
     			throw new \Exception('The JSON response could not be parsed: '.$error. '\n'.$response);
     		}
-    	} elseif ($http_status == 401) {
+    	} elseif ($http_status === 401) {
     		throw new \Exception('Authorization required.');
     	} else {
       		throw new \Exception("Couldn't send message, got response code: ". $http_status. " response: ".$response);
