@@ -20,6 +20,10 @@ class SwiftypeClient {
 		return $this->get($this->engines_path());
 	}
 
+	public function engine($engine_id) {
+		return $this->get($this->engine_path($engine_id));
+	}
+
 	public function create_engine($engine_id) {
 		$engine = array(
 			'engine' => array(
@@ -38,6 +42,10 @@ class SwiftypeClient {
 		return $this->get($this->document_types_path($engine_id));
 	}
 
+	public function document_type($engine_id, $document_type_id) {
+		return $this->get($this->document_type_path($engine_id, $document_type_id));
+	}
+
 	public function create_document_type($engine_id, $document_type_id) {
 		$document_type = array(
 			'document_type' => array(
@@ -53,6 +61,10 @@ class SwiftypeClient {
 
 	public function documents($engine_id, $document_type_id) {
 		return $this->get($this->documents_path($engine_id, $document_type_id));
+	}
+
+	public function document($engine_id, $document_type_id, $document_id) {
+		return $this->get($this->document_path($engine_id, $document_type_id, $document_id));
 	}
 
 	public function create_document($engine_id, $document_type_id, $document = array()) {
