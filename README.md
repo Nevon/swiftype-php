@@ -21,8 +21,8 @@ print_r($client->create_document('Library', 'Books', array(
 			'type' => 'string'
 		),
 		array(
-			'name' => 'genre',
-			'value' => 'sci-fi',
+			'name' => 'author',
+			'value' => 'Jono Bacon',
 			'type' => 'enum'
 		)
 	)
@@ -34,7 +34,7 @@ print_r($client->documents('Library', 'Books'));</pre>
 
 The library should conform to the documentation found [here](http://swiftype.com/documentation/overview).
 
-####__construct([username String], [password String], [apikey String], [host String], [apibasepath String])
+####__construct([username String], [password String], [api_key String], [host String], [api_base_path String])
 The constructor for the SwiftypeClient object. Set your authentication information here. You can supply either an API key or a username (email) and password combination.
 
 `$client = new \Swiftype\SwiftypeClient('your@email.com', 'password', 'api_key');`
