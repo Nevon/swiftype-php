@@ -201,7 +201,8 @@ class SwiftypeClient {
     	curl_close($request);
     
     	if ($http_status / 100 === 2) {
-    		return $response;
+    		$final = json_decode($response);
+    		return ($final === null) ? 'The JSON response could not be parsed: '.$response : $final;
     	} elseif ($http_status === 401) {
     		throw new \Exception('Authorization required.');
     	} else {
