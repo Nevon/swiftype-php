@@ -30,7 +30,6 @@ class SwiftypeClient {
 		return $this->post($this->engines_path(), array(), $engine);
 	}
 
-	//Broken
 	public function destroy_engine($engine_id) {
 		return $this->delete($this->engine_path($engine_id));
 	}
@@ -48,7 +47,6 @@ class SwiftypeClient {
 		return $this->post($this->document_types_path($engine_id), array(), $document_type);
 	}
 
-	//Broken
 	public function destroy_document_type($engine_id, $document_type_id) {
 		return $this->delete($this->document_type_path($engine_id, $document_type_id));
 	}
@@ -77,7 +75,6 @@ class SwiftypeClient {
 		return $this->put($this->documents_path($engine_id, $document_type_id).'/bulk_update', array(), array('documents' => $documents));
 	}
 
-	//Broken
 	public function destroy_document($engine_id, $document_type_id, $document_id) {
 		return $this->delete($this->document_path($engine_id, $document_type_id, $document_id));
 	}
@@ -198,12 +195,47 @@ class SwiftypeClient {
       		throw new \Exception("Sending message failed. Error: ". $error);
     	}
     
-    	$http_status = curl_getinfo($request,CURLINFO_HTTP_CODE);
+    	$http_status = (int)curl_getinfo($request,CURLINFO_HTTP_CODE);
     	curl_close($request);
     
-    	if ($http_status / 100 === 2) {
+    	//Any 2XX HTTP codes mean that the request worked
+    	if (floor($http_status / 100) === 2) {
     		$final = json_decode($response);
-    		return ($final === null) ? 'The JSON response could not be parsed: '.$response : $final;
+    		switch (json_last_error()) {
+    			case JSON_ERROR_DEPTH:
+    				$error = 'Maximum stack depth exceeded';
+    				break;
+    			case JSON_ERROR_CTRL_CHAR:
+    				$error = 'Unexpected control character found';
+    				break;
+    			case JSON_ERROR_SYNTAX:
+    				$error = 'Syntax error, malformed JSON';
+    				break;
+    			case JSON_ERROR_STATE_MISMATCH:
+    				$error = 'Underflow or the modes mismatch';
+    				break;
+    			case JSON_ERROR_UTF8:
+    				$error = 'Malformed UTF-8 characters, possibly incorrectly encoded';
+    				break;
+    			case JSON_ERROR_NONE:
+    			default:
+    				$error = false;
+    				break;
+    		}
+
+    		if ($error === false) {
+    			//Request and response are OK
+    			if ($final) {
+	    			return array(
+	    				'status' => $http_status,
+	    				'body' => $final
+	    			);
+	    		} else {
+	    			return array('status' => $http_status);
+	    		}
+    		} else {
+    			throw new \Exception('The JSON response could not be parsed: '.$error. '\n'.$response);
+    		}
     	} elseif ($http_status === 401) {
     		throw new \Exception('Authorization required.');
     	} else {
