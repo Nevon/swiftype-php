@@ -8,7 +8,7 @@ class SwiftypeClient {
 	private $host;
 	private $api_base_path;
 
-	public function __construct($username, $password, $api_key, $host = 'http://api.swiftype.com', $api_base_path = '/api/v1/') {
+	public function __construct($username = null, $password = null, $api_key = null, $host = 'http://api.swiftype.com', $api_base_path = '/api/v1/') {
 		$this->username = $username;
 		$this->password = $password;
 		$this->api_key = $api_key;
@@ -148,6 +148,7 @@ class SwiftypeClient {
 	}
 
 	private function request($method, $path, $params = array(), $data = array()) {
+		//Final URL
 		$full_path = $this->host.$this->api_base_path.$path.'.json';
 		
 		//Use the api key if we have it.
@@ -162,7 +163,6 @@ class SwiftypeClient {
 			$full_path .= '?' . $query;
 		}
 
-		//Initiate the request
 		$request = curl_init($full_path);
 
 		//Use basic http auth if we have no api key
@@ -173,6 +173,7 @@ class SwiftypeClient {
 			throw new \Exception('Authorization required.');
 		}
 
+		//Return the output instead of printing it
 		curl_setopt($request, CURLOPT_RETURNTRANSFER, true);
     	curl_setopt($request, CURLOPT_FAILONERROR, true);
 
