@@ -183,9 +183,9 @@ class SwiftypeClient {
 
 		//Return the output instead of printing it
 		curl_setopt($request, CURLOPT_RETURNTRANSFER, true);
-    	curl_setopt($request, CURLOPT_FAILONERROR, true);
+		curl_setopt($request, CURLOPT_FAILONERROR, true);
 
-    	$body = ($data) ? json_encode($data) : '';
+		$body = ($data) ? json_encode($data) : '';
 
 		curl_setopt($request, CURLOPT_HTTPHEADER, array('Content-type: application/json'));
 
@@ -201,57 +201,57 @@ class SwiftypeClient {
 
 		$response = curl_exec($request);
 		$error = curl_error($request);
-    	
-    	if ($error) {
-      		throw new \Exception("Sending message failed. Error: ". $error);
-    	}
-    
-    	$http_status = (int)curl_getinfo($request,CURLINFO_HTTP_CODE);
-    	curl_close($request);
-    
-    	//Any 2XX HTTP codes mean that the request worked
-    	if (intval(floor($http_status / 100)) === 2) {
-    		$final = json_decode($response);
-    		switch (json_last_error()) {
-    			case JSON_ERROR_DEPTH:
-    				$error = 'Maximum stack depth exceeded';
-    				break;
-    			case JSON_ERROR_CTRL_CHAR:
-    				$error = 'Unexpected control character found';
-    				break;
-    			case JSON_ERROR_SYNTAX:
-    				$error = 'Syntax error, malformed JSON';
-    				break;
-    			case JSON_ERROR_STATE_MISMATCH:
-    				$error = 'Underflow or the modes mismatch';
-    				break;
-    			case JSON_ERROR_UTF8:
-    				$error = 'Malformed UTF-8 characters, possibly incorrectly encoded';
-    				break;
-    			case JSON_ERROR_NONE:
-    			default:
-    				$error = false;
-    				break;
-    		}
+		
+		if ($error) {
+	  		throw new \Exception("Sending message failed. Error: ". $error);
+		}
+	
+		$http_status = (int)curl_getinfo($request,CURLINFO_HTTP_CODE);
+		curl_close($request);
+	
+		//Any 2XX HTTP codes mean that the request worked
+		if (intval(floor($http_status / 100)) === 2) {
+			$final = json_decode($response);
+			switch (json_last_error()) {
+				case JSON_ERROR_DEPTH:
+					$error = 'Maximum stack depth exceeded';
+					break;
+				case JSON_ERROR_CTRL_CHAR:
+					$error = 'Unexpected control character found';
+					break;
+				case JSON_ERROR_SYNTAX:
+					$error = 'Syntax error, malformed JSON';
+					break;
+				case JSON_ERROR_STATE_MISMATCH:
+					$error = 'Underflow or the modes mismatch';
+					break;
+				case JSON_ERROR_UTF8:
+					$error = 'Malformed UTF-8 characters, possibly incorrectly encoded';
+					break;
+				case JSON_ERROR_NONE:
+				default:
+					$error = false;
+					break;
+			}
 
-    		if ($error === false) {
-    			//Request and response are OK
-    			if ($final) {
-	    			return array(
-	    				'status' => $http_status,
-	    				'body' => $final
-	    			);
-	    		} else {
-	    			return array('status' => $http_status);
-	    		}
-    		} else {
-    			throw new \Exception('The JSON response could not be parsed: '.$error. '\n'.$response);
-    		}
-    	} elseif ($http_status === 401) {
-    		throw new \Exception('Authorization required.');
-    	} else {
-      		throw new \Exception("Couldn't send message, got response code: ". $http_status. " response: ".$response);
-    	}
+			if ($error === false) {
+				//Request and response are OK
+				if ($final) {
+					return array(
+						'status' => $http_status,
+						'body' => $final
+					);
+				} else {
+					return array('status' => $http_status);
+				}
+			} else {
+				throw new \Exception('The JSON response could not be parsed: '.$error. '\n'.$response);
+			}
+		} elseif ($http_status === 401) {
+			throw new \Exception('Authorization required.');
+		} else {
+	  		throw new \Exception("Couldn't send message, got response code: ". $http_status. " response: ".$response);
+		}
 	}
 }
 
