@@ -8,11 +8,11 @@ A PHP client for [Swiftype](http://swiftype.com), a search and autocomplete API 
 
 $client = new \Swiftype\SwiftypeClient('your@email.com', 'password', 'api_key');
 
-print_r($client->create_engine('Library'));
+print_r($client->create_engine('library'));
 
-print_r($client->create_document_type('Library', 'Books'));
+print_r($client->create_document_type('library', 'books'));
 
-print_r($client->create_document('Library', 'Books', array(
+print_r($client->create_document('library', 'books', array(
 	'external_id' => '1',
 	'fields' => array(
 		array(
@@ -28,7 +28,7 @@ print_r($client->create_document('Library', 'Books', array(
 	)
 )));
 
-print_r($client->documents('Library', 'Books'));</pre>
+print_r($client->documents('library', 'books'));</pre>
 
 ###Documentation
 
@@ -52,7 +52,7 @@ Returns a specific engine.
 ####create_engine(engine_id String)
 Creates a new engine
 
-`$client->create_engine('Library');`
+`$client->create_engine('library');`
 
 ####destroy_engine(engine_id String)
 Destroys an engine
@@ -72,7 +72,7 @@ Fetches a specific document_type.
 ####create_document_type(engine_id String, document_type_id String)
 Creates a document type for a specific engine.
 
-`$client->create_document_type('library', 'Books');`
+`$client->create_document_type('library', 'books');`
 
 ####destroy_document_type(engine_id String, document_type_id String)
 Destroys a document type.
