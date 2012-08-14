@@ -1,4 +1,4 @@
-<?php 
+<?php
 namespace Swiftype;
 
 class SwiftypeClient {
@@ -102,25 +102,29 @@ class SwiftypeClient {
 	public function search($engine_id, $document_type_id=null, $query, $options = array()) {
 		$query_string = array('q' => $query);
 		$full_query = array_merge($query_string, $options);
-		return $this->get($this->search_path($engine_id, $document_type_id), array(), $full_query);
+		return $this->post($this->search_path($engine_id, $document_type_id), array(), $full_query);
 	}
 
-	public function suggest($engine_id, $query, $options = array()) {
+	public function suggest($engine_id, $document_type_id=null, $query, $options = array()) {
 		$query_string = array('q' => $query);
 		$full_query = array_merge($query_string, $options);
-		return $this->get($this->suggest_path($engine_id), array(), $full_query);
+		return $this->post($this->suggest_path($engine_id, $document_type_id), array(), $full_query);
 	}
 
 	private function search_path($engine_id, $document_type_id = null) {
 		if ($document_type_id === null) {
 			return 'engines/'.$engine_id.'/search';
 		} else {
-			return 'engines/'.$engine_id.'/document_types/'.$document_type_id.'/documents';
+			return 'engines/'.$engine_id.'/document_types/'.$document_type_id.'/search';
 		}
 	}
 
-	private function suggest_path($engine_id) {
-		return 'engines/'.$engine_id.'/suggest';
+	private function suggest_path($engine_id, $document_type_id = null) {
+		if ($document_type_id === null) {
+			return 'engines/'.$engine_id.'/suggest';
+		} else {
+			return 'engines/'.$engine_id.'/document_types/'.$document_type_id.'/suggest';
+		}
 	}
 
 	private function engines_path() {
@@ -166,7 +170,7 @@ class SwiftypeClient {
 	private function request($method, $path, $params = array(), $data = array()) {
 		//Final URL
 		$full_path = $this->host.$this->api_base_path.$path.'.json';
-		
+
 		//Use the api key if we have it.
 		if ($this->api_key != null) {
 			$params['auth_token'] = $this->api_key;
@@ -209,14 +213,14 @@ class SwiftypeClient {
 
 		$response = curl_exec($request);
 		$error = curl_error($request);
-		
+
 		if ($error) {
 	  		throw new \Exception("Sending message failed. Error: ". $error);
 		}
-	
+
 		$http_status = (int)curl_getinfo($request,CURLINFO_HTTP_CODE);
 		curl_close($request);
-	
+
 		//Any 2XX HTTP codes mean that the request worked
 		if (intval(floor($http_status / 100)) === 2) {
 			$final = json_decode($response);
