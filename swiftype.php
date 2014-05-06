@@ -95,6 +95,10 @@ class SwiftypeClient {
 		return $this->post($this->documents_path($engine_id, $document_type_id).'/bulk_create_or_update', array(), array('documents' => $documents));
 	}
 
+	public function create_or_update_documents_verbose($engine_id, $document_type_id, $documents = array()) {
+		return $this->post($this->documents_path($engine_id, $document_type_id).'/bulk_create_or_update_verbose', array(), array('documents' => $documents));
+	}
+
 	public function destroy_document($engine_id, $document_type_id, $document_id) {
 		return $this->delete($this->document_path($engine_id, $document_type_id, $document_id));
 	}
