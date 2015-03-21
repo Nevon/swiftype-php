@@ -180,8 +180,13 @@ class SwiftypeClient {
 		$full_path = $this->host.$this->api_base_path.$path.'.json';
 
 		//Use the api key if we have it.
-		if ($this->api_key != null) {
+		//Throw an exception if we have nothing with which to authenticate ourselves
+		if ($this->api_key !== null) {
 			$params['auth_token'] = $this->api_key;
+		} else if ($this->username === null && $this->password === null) {
+			throw new \Exception('Authorization requires an API key, or username/password combination.');
+		} else if ($this->username === null || $this->password === null) {
+			throw new \Exception('Authorization requires both username AND password. Alternatively, you can provide an API key.');
 		}
 
 		//Build the query string
@@ -194,11 +199,9 @@ class SwiftypeClient {
 		$request = curl_init($full_path);
 
 		//Use basic http auth if we have no api key
-		//Throw an exception if we have nothing with which to authenticate ourselves
-		if ($this->api_key === null && $this->username != null && $this->password != null) {
+		//Exceptions have already been thrown if we have nothing with which to authenticate ourselves
+		if ($this->api_key === null) {
 			curl_setopt($request, CURLOPT_USERPWD, $this->username.':'.$this->password);
-		} elseif ($this->api_key === null && $this->username === null && $this->password === null) {
-			throw new \Exception('Authorization required.');
 		}
 
 		//Return the output instead of printing it
