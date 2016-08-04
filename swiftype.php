@@ -202,6 +202,8 @@ class SwiftypeClient {
 		}
 
 		//Return the output instead of printing it
+		curl_setopt($request, CURLOPT_CONNECTTIMEOUT, 60); // 1 minute to connect
+		curl_setopt($request, CURLOPT_TIMEOUT, 120); // 2 minutes to run
 		curl_setopt($request, CURLOPT_RETURNTRANSFER, true);
 		curl_setopt($request, CURLOPT_FAILONERROR, true);
 
