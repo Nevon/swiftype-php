@@ -5,8 +5,6 @@ A PHP client for [Swiftype](http://swiftype.com), a search and autocomplete API 
 ## Example usage
 
 ```php
-require 'swiftype.php';
-
 $client = new \Swiftype\SwiftypeClient('your@email.com', 'password', 'api_key');
 
 print_r($client->create_engine('library'));
