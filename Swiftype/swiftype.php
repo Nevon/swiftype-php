@@ -7,13 +7,15 @@ class SwiftypeClient {
 	private $api_key;
 	private $host;
 	private $api_base_path;
+  private $default_engine;
 
-	public function __construct($username = null, $password = null, $api_key = null, $host = 'http://api.swiftype.com', $api_base_path = '/api/v1/') {
+  public function __construct($username = null, $password = null, $api_key = null, $host = 'http://api.swiftype.com', $api_base_path = '/api/v1/', $default_engine) {
 		$this->username = $username;
 		$this->password = $password;
 		$this->api_key = $api_key;
 		$this->host = $host;
 		$this->api_base_path = $api_base_path;
+    $this->default_engine = $default_engine;
 
 		if(!function_exists('curl_init')){
 			throw new \Exception('Swiftype requires the CURL PHP extension.');
@@ -24,6 +26,10 @@ class SwiftypeClient {
 		}
 	}
 
+  private function get_engine($engine_id) {
+    return isset($engine_id) ? $engine_id : $this->default_engine;
+  }
+
 	public function engines() {
 		return $this->get($this->engines_path());
 	}
@@ -31,6 +37,10 @@ class SwiftypeClient {
 	public function engine($engine_id) {
 		return $this->get($this->engine_path($engine_id));
 	}
+
+  public function default_engine() {
+    return $this->default_engine;
+  }
 
 	public function create_engine($engine_id) {
 		$engine = array(
@@ -120,6 +130,7 @@ class SwiftypeClient {
 	}
 
 	private function search_path($engine_id, $document_type_id = null) {
+    $engine_id = $this->get_engine($engine_id);
 		if ($document_type_id === null) {
 			return 'engines/'.$engine_id.'/search';
 		} else {
@@ -128,6 +139,7 @@ class SwiftypeClient {
 	}
 
 	private function suggest_path($engine_id, $document_type_id = null) {
+    $engine_id = $this->get_engine($engine_id);
 		if ($document_type_id === null) {
 			return 'engines/'.$engine_id.'/suggest';
 		} else {
@@ -144,11 +156,11 @@ class SwiftypeClient {
 	}
 
 	private function document_type_path($engine_id, $document_type_id) {
-		return $this->engine_path($engine_id).'/document_types/'.$document_type_id;
+    return $this->engine_path($this->get_engine($engine_id)).'/document_types/'.$document_type_id;
 	}
 
 	private function document_types_path($engine_id) {
-		return $this->engine_path($engine_id).'/document_types';
+    return $this->engine_path($this->get_engine($engine_id)).'/document_types';
 	}
 
 	private function document_path($engine_id, $document_type_id, $document_id) {
