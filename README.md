@@ -2,7 +2,7 @@
 
 A PHP client for [Elastic Site Search](https://swiftype.com/site-search), a search and autocomplete API for developers.
 
-⚠️ This integration is deprecated and you should use the [offcial client](https://github.com/swiftype/swiftype-site-search-php) instead.
+⚠️ This integration is deprecated and you should use the [official client](https://github.com/swiftype/swiftype-site-search-php) instead.
 
 ## Example usage
 
